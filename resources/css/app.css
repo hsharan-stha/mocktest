@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.pagination li a,
+.pagination li span {
+    color: white !important;
+}
+
+.page {
+  background-color: white;
+  /* backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; */
+  overflow: hidden;
+}
+
+/* #flipbook .page {
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+} */
+
+/* Library Page Enhancements */
+@layer utilities {
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+/* Smooth transitions for library cards */
+.library-book-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.library-book-card:hover {
+    transform: translateY(-4px);
+}
