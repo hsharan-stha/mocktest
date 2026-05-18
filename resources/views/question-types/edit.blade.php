@@ -52,6 +52,27 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label for="category_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Category
+                            </label>
+                            <select
+                                name="category_id"
+                                id="category_id"
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                            >
+                                <option value="">Select a category</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id', $questionType->category_id) == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Count Field -->
                         <div>
                             <label for="count" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -145,4 +166,3 @@
         </div>
     </div>
 </x-app-layout>
-

@@ -30,6 +30,34 @@
             </div>
 
             <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <form method="GET" class="flex flex-col sm:flex-row sm:items-end gap-3">
+                        <div class="w-full sm:w-72">
+                            <label for="category_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Filter by Category</label>
+                            <select
+                                name="category_id"
+                                id="category_id"
+                                class="w-full rounded-md border-gray-300 dark:border-gray-600 text-sm dark:bg-gray-700 dark:text-white"
+                            >
+                                <option value="">All Categories</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-md">
+                                Filter
+                            </button>
+                            <a href="{{ route('question-types.index') }}" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                Reset
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-gray-50 dark:bg-gray-700">
@@ -42,6 +70,9 @@
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Type Code
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Category
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Count
@@ -67,6 +98,9 @@
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                                             {{ $questionType->typecode }}
                                         </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                        {{ $questionType->category?->name ?? 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                         {{ $questionType->count }}
@@ -109,7 +143,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                                         No question types found. <a href="{{ route('question-types.create') }}" class="text-primary-600 hover:text-primary-800">Create one now</a>.
                                     </td>
                                 </tr>
@@ -121,4 +155,3 @@
         </div>
     </div>
 </x-app-layout>
-
