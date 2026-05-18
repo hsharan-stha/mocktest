@@ -1,6 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        font-family: "Yu Kyokasho", "YuKyokasho", "Yu Kyokasho Yoko",
+            "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo,
+            "Yu Gothic", YuGothic, sans-serif;
+    }
+}
+
 .pagination li a,
 .pagination li span {
     color: white !important;

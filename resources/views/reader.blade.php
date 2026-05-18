@@ -14,7 +14,7 @@
         
         /* JFT-Basic: body */
         body { 
-            font-family: "Noto Sans JP", "Hiragino Kaku Gothic Pro", "Hiragino Kaku Gothic ProN", "Meiryo", "MS PGothic", "Yu Gothic", "YuGothic", Osaka, sans-serif;
+            font-family: "Yu Kyokasho", "YuKyokasho", "Yu Kyokasho Yoko", "Hiragino Kaku Gothic Pro", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", "MS PGothic", "Yu Gothic", "YuGothic", Osaka, sans-serif;
             font-size: 100%;
             background-color: #E3DFE1;
             color: #333;

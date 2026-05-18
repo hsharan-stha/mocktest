@@ -11,7 +11,17 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: [
+                    '"Yu Kyokasho"',
+                    '"YuKyokasho"',
+                    '"Yu Kyokasho Yoko"',
+                    '"Hiragino Kaku Gothic ProN"',
+                    '"Hiragino Sans"',
+                    'Meiryo',
+                    '"Yu Gothic"',
+                    'YuGothic',
+                    ...defaultTheme.fontFamily.sans,
+                ],
             },
             colors: {
                 primary: {

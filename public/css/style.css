@@ -5,7 +5,7 @@ body {
     overflow: hidden;
     height: 100%;
     width: 100%;
-    font-family: "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    font-family: "Yu Kyokasho", "YuKyokasho", "Yu Kyokasho Yoko", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, "Yu Gothic", YuGothic, sans-serif;
     background-color: #f8fafc;
     color: #0f172a;
 }
@@ -129,7 +129,7 @@ body {
     padding: 48px 64px;
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    font-family: "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", sans-serif;
+    font-family: "Yu Kyokasho", "YuKyokasho", "Yu Kyokasho Yoko", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, "Yu Gothic", YuGothic, sans-serif;
     max-width: 600px;
 }
 
