@@ -202,6 +202,7 @@
                                     <option
                                         value="{{ $questionType->id }}"
                                         data-search-text="{{ strtolower($questionType->type . ' ' . $questionType->typecode) }}"
+                                        data-category-id="{{ $questionType->category_id ?? '' }}"
                                         {{ old('type_id', $page->type_id) == $questionType->id ? 'selected' : '' }}
                                     >
                                         {{ $questionType->type }} ({{ $questionType->typecode }})
@@ -384,7 +385,8 @@
         const originalTypeOptions = Array.from(typeIdSelect?.options || []).map(option => ({
             value: option.value,
             text: option.text,
-            searchText: option.dataset.searchText || ''
+            searchText: option.dataset.searchText || '',
+            categoryId: option.dataset.categoryId || ''
         }));
 
         function filterQuestionTypes() {
@@ -393,21 +395,22 @@
             }
 
             const selectedCategoryOption = categoryFilterSelect.options[categoryFilterSelect.selectedIndex];
-            const selectedCategoryName = (selectedCategoryOption?.dataset.categoryName || '').trim();
+            const selectedCategoryId = selectedCategoryOption?.value || '';
             const currentValue = typeIdSelect.value;
 
             typeIdSelect.innerHTML = '';
 
             originalTypeOptions.forEach(optionData => {
-                const shouldShow = !selectedCategoryName
+                const shouldShow = !selectedCategoryId
                     || optionData.value === ''
-                    || optionData.searchText.includes(selectedCategoryName);
+                    || optionData.categoryId === selectedCategoryId;
 
                 if (shouldShow) {
                     const option = document.createElement('option');
                     option.value = optionData.value;
                     option.textContent = optionData.text;
                     option.dataset.searchText = optionData.searchText;
+                    option.dataset.categoryId = optionData.categoryId;
 
                     if (optionData.value === currentValue) {
                         option.selected = true;
