@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Category;
 use App\Models\Page;
 use App\Models\QuestionType;
 use App\Models\QuestionTypeSubSection;
@@ -17,7 +18,9 @@ class PageController extends Controller
     {
         $pages = $book->pages()->with('questionType')->orderBy('pageno')->get();
         $questionTypes = QuestionType::orderBy('order')->get();
-        return view('pages.index', compact('book', 'pages', 'questionTypes'));
+        $categories = Category::orderBy('name')->get();
+
+        return view('pages.index', compact('book', 'pages', 'questionTypes', 'categories'));
     }
 
 
@@ -25,6 +28,7 @@ class PageController extends Controller
     {
         $book = $page->book;
         $questionTypes = QuestionType::orderBy('order')->get();
+        $categories = Category::orderBy('name')->get();
         
         // Get previous and next pages for navigation
         $previousPage = $book->pages()
@@ -37,7 +41,7 @@ class PageController extends Controller
             ->orderBy('pageno', 'asc')
             ->first();
         
-        return view('pages.edit', compact('page', 'book', 'questionTypes', 'previousPage', 'nextPage'));
+        return view('pages.edit', compact('page', 'book', 'questionTypes', 'categories', 'previousPage', 'nextPage'));
     }
 
     public function update(Request $request, Page $page)

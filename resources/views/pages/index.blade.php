@@ -173,6 +173,29 @@
                             </select>
                         </div>
 
+                        <!-- Category Filter -->
+                        <div>
+                            <label for="question_type_category_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Category Filter (Optional)
+                            </label>
+                            <select
+                                id="question_type_category_id"
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-gray-100"
+                            >
+                                <option value="">All categories</option>
+                                @foreach($categories as $category)
+                                    <option
+                                        value="{{ $category->id }}"
+                                        data-category-name="{{ strtolower($category->name) }}"
+                                        {{ $book->category_id == $category->id ? 'selected' : '' }}
+                                    >
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">This only filters the question type list and is not saved.</p>
+                        </div>
+
                         <!-- Type Field -->
                         <div>
                             <label for="type_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -185,7 +208,11 @@
                             >
                                 <option value="">Select question type (Optional)</option>
                                 @foreach($questionTypes as $questionType)
-                                    <option value="{{ $questionType->id }}" {{ old('type_id') == $questionType->id ? 'selected' : '' }}>
+                                    <option
+                                        value="{{ $questionType->id }}"
+                                        data-search-text="{{ strtolower($questionType->type . ' ' . $questionType->typecode) }}"
+                                        {{ old('type_id') == $questionType->id ? 'selected' : '' }}
+                                    >
                                         {{ $questionType->type }} ({{ $questionType->typecode }})
                                     </option>
                                 @endforeach
@@ -360,9 +387,56 @@
         });
 
         // Dynamic sub-section loading
+        const categoryFilterSelect = document.getElementById('question_type_category_id');
         const typeIdSelect = document.getElementById('type_id');
         const subSectionContainer = document.getElementById('sub-section-container');
         const subSectionSelect = document.getElementById('sub_section_id');
+        const originalTypeOptions = Array.from(typeIdSelect?.options || []).map(option => ({
+            value: option.value,
+            text: option.text,
+            searchText: option.dataset.searchText || ''
+        }));
+
+        function filterQuestionTypes() {
+            if (!typeIdSelect || !categoryFilterSelect) {
+                return;
+            }
+
+            const selectedCategoryOption = categoryFilterSelect.options[categoryFilterSelect.selectedIndex];
+            const selectedCategoryName = (selectedCategoryOption?.dataset.categoryName || '').trim();
+            const currentValue = typeIdSelect.value;
+
+            typeIdSelect.innerHTML = '';
+
+            originalTypeOptions.forEach(optionData => {
+                const shouldShow = !selectedCategoryName
+                    || optionData.value === ''
+                    || optionData.searchText.includes(selectedCategoryName);
+
+                if (shouldShow) {
+                    const option = document.createElement('option');
+                    option.value = optionData.value;
+                    option.textContent = optionData.text;
+                    option.dataset.searchText = optionData.searchText;
+
+                    if (optionData.value === currentValue) {
+                        option.selected = true;
+                    }
+
+                    typeIdSelect.appendChild(option);
+                }
+            });
+
+            if (typeIdSelect.value !== currentValue) {
+                typeIdSelect.value = '';
+                subSectionSelect.innerHTML = '<option value="">Select sub-section (Optional)</option>';
+                subSectionContainer.style.display = 'none';
+            }
+        }
+
+        categoryFilterSelect?.addEventListener('change', function() {
+            filterQuestionTypes();
+        });
 
         typeIdSelect?.addEventListener('change', function() {
             const questionTypeId = this.value;
@@ -400,6 +474,7 @@
         });
 
         // Trigger change event on page load if type_id is already selected
+        filterQuestionTypes();
         if (typeIdSelect?.value) {
             typeIdSelect.dispatchEvent(new Event('change'));
         }

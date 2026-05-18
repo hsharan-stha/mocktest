@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\QuestionType;
 use Illuminate\Http\Request;
 
@@ -13,17 +12,10 @@ class QuestionTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $questionTypes = QuestionType::with('category')
-            ->when($request->filled('category_id'), function ($query) use ($request) {
-                $query->where('category_id', $request->category_id);
-            })
-            ->orderBy('order')
-            ->get();
-        $categories = Category::orderBy('name')->get();
-
-        return view('question-types.index', compact('questionTypes', 'categories'));
+        $questionTypes = QuestionType::orderBy('order')->get();
+        return view('question-types.index', compact('questionTypes'));
     }
 
     /**
@@ -33,8 +25,7 @@ class QuestionTypeController extends Controller
      */
     public function create()
     {
-        $categories = Category::orderBy('name')->get();
-        return view('question-types.create', compact('categories'));
+        return view('question-types.create');
     }
 
     /**
@@ -52,7 +43,6 @@ class QuestionTypeController extends Controller
             'order' => 'nullable|integer|min:0',
             'typecode' => 'required|string|max:255|unique:question_types,typecode',
             'timer' => 'nullable|integer|min:0',
-            'category_id' => 'nullable|exists:categories,id',
         ]);
 
         QuestionType::create($request->all());
@@ -80,8 +70,7 @@ class QuestionTypeController extends Controller
      */
     public function edit(QuestionType $questionType)
     {
-        $categories = Category::orderBy('name')->get();
-        return view('question-types.edit', compact('questionType', 'categories'));
+        return view('question-types.edit', compact('questionType'));
     }
 
     /**
@@ -100,7 +89,6 @@ class QuestionTypeController extends Controller
             'order' => 'nullable|integer|min:0',
             'typecode' => 'required|string|max:255|unique:question_types,typecode,' . $questionType->id,
             'timer' => 'nullable|integer|min:0',
-            'category_id' => 'nullable|exists:categories,id',
         ]);
 
         $questionType->update($request->all());
