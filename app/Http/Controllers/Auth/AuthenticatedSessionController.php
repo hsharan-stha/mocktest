@@ -56,7 +56,7 @@ class AuthenticatedSessionController extends Controller
 
         // Your redirect logic
         if ($user->role_id == 3) {
-            return redirect('/');
+            return redirect('/library');
         }
 
         return redirect()->intended(RouteServiceProvider::HOME);
