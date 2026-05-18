@@ -12,14 +12,12 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: [
-                    '"Yu Kyokasho"',
-                    '"YuKyokasho"',
-                    '"Yu Kyokasho Yoko"',
-                    '"Hiragino Kaku Gothic ProN"',
-                    '"Hiragino Sans"',
-                    'Meiryo',
-                    '"Yu Gothic"',
-                    'YuGothic',
+                    '"Shippori Mincho"',
+                    '"Yu Mincho"',
+                    'YuMincho',
+                    '"Hiragino Mincho ProN"',
+                    '"MS PMincho"',
+                    '"MS Mincho"',
                     ...defaultTheme.fontFamily.sans,
                 ],
             },

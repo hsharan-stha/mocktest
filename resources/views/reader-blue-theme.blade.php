@@ -13,7 +13,7 @@
         }
         
         body { 
-            font-family: "Yu Kyokasho", "YuKyokasho", "Yu Kyokasho Yoko", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", "MS PGothic", "Yu Gothic", "YuGothic", "Noto Sans JP", Arial, sans-serif;
+            font-family: "Shippori Mincho", "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "MS PMincho", "MS Mincho", serif;
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;

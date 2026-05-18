@@ -4,9 +4,8 @@
 
 @layer base {
     body {
-        font-family: "Yu Kyokasho", "YuKyokasho", "Yu Kyokasho Yoko",
-            "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo,
-            "Yu Gothic", YuGothic, sans-serif;
+        font-family: "Shippori Mincho", "Yu Mincho", YuMincho,
+            "Hiragino Mincho ProN", "MS PMincho", "MS Mincho", serif;
     }
 }
 
