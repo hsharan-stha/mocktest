@@ -226,7 +226,7 @@
         }
         
         .question-text {
-            font-size: 110%;
+            font-size: 30px;
             line-height: 1.8;
             color: #333;
             margin-bottom: 24px;
@@ -312,7 +312,7 @@
             border: solid 2px #000;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 110%;
+            font-size: 30px;
             font-weight: bold;
         }
         
@@ -327,12 +327,12 @@
             color: #333;
             margin-right: 16px;
             min-width: 36px;
-            font-size: 110%;
+            font-size: 30px;
         }
-        
+
         .option-text {
             flex: 1;
-            font-size: 110%;
+            font-size: 30px;
             color: #333;
             line-height: 1.6;
         }
@@ -653,12 +653,11 @@
                 padding: 20px;
             }
             
-            .question-text {
-                font-size: 100%;
-            }
-            
+            .question-text,
+            .option-item,
+            .option-label,
             .option-text {
-                font-size: 100%;
+                font-size: 30px;
             }
             
             .answer-comparison {
