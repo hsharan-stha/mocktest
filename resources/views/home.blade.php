@@ -100,39 +100,32 @@
                         </div>
                     </div>
 
-                    <div class="swiper mySwiper">
-                        <div class="swiper-wrapper">
-                            @forelse ($category->books as $book)
-                                <div class="swiper-slide py-2">
-                                    <article class="book-card h-full">
-                                        <div class="skeleton-loader absolute inset-0 z-10 animate-pulse rounded-[1.5rem] bg-blue-50"></div>
-                                        <div class="book-cover">
-                                            <a href="{{ route('detail.view', $book->id) }}">
-                                                <img loading="lazy" src="{{ asset($book->images) }}" alt="Book cover" class="book-image opacity-0 transition-opacity duration-500">
-                                            </a>
-                                        </div>
-                                        <div class="book-body">
-                                            <div>
-                                                <h3 class="line-clamp-2 text-lg font-semibold text-slate-900">{{ $book->name }}</h3>
-                                                <p class="mt-2 line-clamp-2 text-sm text-slate-600">{{ $book->description }}</p>
-                                            </div>
-                                            <div class="flex items-center justify-between gap-3">
-                                                <span class="price-chip">Rs.{{ number_format($book->price) }}</span>
-                                                <button type="button" onclick="addToCart(this, {{ $book }}, 1)" class="ui-button-primary px-4 py-2 text-xs">
-                                                    <span class="button-text">{{ __('home.addToCart') }}</span>
-                                                    <span class="loading hidden">{{ __('home.loading') }}</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </article>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @forelse ($category->books as $book)
+                            <article class="book-card h-full">
+                                <div class="skeleton-loader absolute inset-0 z-10 animate-pulse rounded-[1.5rem] bg-blue-50"></div>
+                                <div class="book-cover">
+                                    <a href="{{ route('detail.view', $book->id) }}">
+                                        <img loading="lazy" src="{{ asset($book->images) }}" alt="Book cover" class="book-image opacity-0 transition-opacity duration-500">
+                                    </a>
                                 </div>
-                            @empty
-                                <p class="text-slate-500">No books in this category.</p>
-                            @endforelse
-                        </div>
-                        <div class="swiper-button-prev"></div>
-                        <div class="swiper-button-next"></div>
-                        <div class="swiper-pagination relative mt-8"></div>
+                                <div class="book-body">
+                                    <div>
+                                        <h3 class="line-clamp-2 text-lg font-semibold text-slate-900">{{ $book->name }}</h3>
+                                        <p class="mt-2 line-clamp-2 text-sm text-slate-600">{{ $book->description }}</p>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-3">
+                                        <span class="price-chip">Rs.{{ number_format($book->price) }}</span>
+                                        <button type="button" onclick="addToCart(this, {{ $book }}, 1)" class="ui-button-primary px-4 py-2 text-xs">
+                                            <span class="button-text">{{ __('home.addToCart') }}</span>
+                                            <span class="loading hidden">{{ __('home.loading') }}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                        @empty
+                            <p class="text-slate-500">No books in this category.</p>
+                        @endforelse
                     </div>
                 </section>
             @endif
@@ -141,28 +134,6 @@
     </div>
 
     <script>
-        const swipers = document.querySelectorAll('.mySwiper');
-        swipers.forEach(container => {
-            new Swiper(container, {
-                lazy: true,
-                spaceBetween: 16,
-                freeMode: true,
-                navigation: {
-                    nextEl: container.querySelector('.swiper-button-next'),
-                    prevEl: container.querySelector('.swiper-button-prev'),
-                },
-                pagination: {
-                    el: container.querySelector('.swiper-pagination'),
-                    clickable: true,
-                },
-                breakpoints: {
-                    0: { slidesPerView: 1.15 },
-                    640: { slidesPerView: 2.2 },
-                    1024: { slidesPerView: 4.2 },
-                },
-            });
-        });
-
         document.addEventListener("DOMContentLoaded", () => {
             const bookImages = document.querySelectorAll(".book-image");
             bookImages.forEach((img) => {
@@ -175,7 +146,7 @@
             });
 
             function handleImageLoad(img) {
-                const wrapper = img.closest(".swiper-slide");
+                const wrapper = img.closest("article");
                 const skeleton = wrapper?.querySelector(".skeleton-loader");
                 if (skeleton) skeleton.remove();
                 img.classList.remove("opacity-0");
