@@ -10,13 +10,7 @@
 
         <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
             <section class="surface p-5 sm:p-6">
-                <div class="mb-5 flex items-center justify-between gap-4">
-                    <div>
-                        <h2 class="section-title">{{ app()->getLocale() === 'jp' ? 'プレビュー' : 'Preview' }}</h2>
-                        <p class="section-copy mt-2">{{ app()->getLocale() === 'jp' ? 'サンプル内容を見て、問題形式や表示方法を確認できます。' : 'Flip through the sample content to understand the question style and presentation.' }}</p>
-                    </div>
-                    <span class="ui-badge ui-badge-accent">{{ app()->getLocale() === 'jp' ? 'サンプルページ' : 'Sample Pages' }}</span>
-                </div>
+                <!-- Preview header removed as requested -->
 
                 <script src="{{ asset('js/extras/jquery.min.1.7.js') }}"></script>
                 <script src="{{ asset('js/lib/turn.min.js') }}"></script>
