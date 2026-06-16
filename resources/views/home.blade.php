@@ -100,7 +100,7 @@
                         </div>
                     </div>
 
-                    <div class="flex gap-6 overflow-x-auto pb-4">
+                    <div class="flex flex-row gap-6 overflow-x-auto pb-4">
                         @forelse ($category->books as $book)
                             <article class="book-card h-full flex-shrink-0 w-64">
                                 <div class="skeleton-loader absolute inset-0 z-10 animate-pulse rounded-[1.5rem] bg-blue-50"></div>
