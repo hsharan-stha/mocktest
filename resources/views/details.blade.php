@@ -1,5 +1,11 @@
 <x-entry-layout>
     <div class="page-stack">
+        @if (empty($bookDetails))
+            <section class="surface p-6">
+                <h2 class="section-title">{{ app()->getLocale() === 'jp' ? '書籍が見つかりません' : 'Book not found' }}</h2>
+                <p class="section-copy mt-2">{{ app()->getLocale() === 'jp' ? '要求された書籍は利用できません。' : 'The requested book is not available.' }}</p>
+            </section>
+        @else
         <section class="page-hero">
             <div class="relative z-10">
                 <span class="eyebrow">{{ app()->getLocale() === 'jp' ? '書籍詳細' : 'Book Detail' }}</span>
@@ -12,33 +18,7 @@
             <section class="surface p-5 sm:p-6">
                 <!-- Preview header removed as requested -->
 
-                <script src="{{ asset('js/extras/jquery.min.1.7.js') }}"></script>
-                <script src="{{ asset('js/lib/turn.min.js') }}"></script>
-
-                <div id="flipbook" class="mx-auto aspect-[3/4] max-w-xl overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-inner">
-                    <div class="page flex items-center justify-center bg-white">
-                        <img loading="lazy" src="{{ asset($bookDetails->images) }}" alt="Cover" class="h-full w-full object-cover">
-                    </div>
-                    @foreach ($bookDetails->pages as $page)
-                        <div class="page bg-white px-6 py-8">
-                            <div class="flex h-full flex-col justify-center gap-6">
-                                <p class="text-lg font-semibold leading-8 text-slate-900">{{ $page->question }}</p>
-                                <div class="space-y-3">
-                                    <div class="rounded-2xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700">{{ $page->option1 }}</div>
-                                    <div class="rounded-2xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700">{{ $page->option2 }}</div>
-                                    <div class="rounded-2xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700">{{ $page->option3 }}</div>
-                                    <div class="rounded-2xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700">{{ $page->option4 }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                    <div class="page">
-                        <div class="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-blue-600 px-8 text-center text-white">
-                            <h3 class="text-2xl font-semibold">{{ app()->getLocale() === 'jp' ? 'フルアクセスを解放' : 'Unlock Full Access' }}</h3>
-                            <p class="mt-4 text-sm leading-7 text-blue-100">{{ app()->getLocale() === 'jp' ? '購入するとライブラリで続きを読むことができ、模擬試験の全機能を利用できます。' : 'Purchase this title to continue reading in your library and unlock the full mock test preparation flow.' }}</p>
-                        </div>
-                    </div>
-                </div>
+                <!-- Flipbook removed per request -->
             </section>
 
             <section class="space-y-6">
@@ -81,33 +61,15 @@
                 </div>
             </section>
         </div>
+        @endif
     </div>
-
-    <style>
-        #flipbook .page {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-    </style>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            $('#flipbook').turn({
-                width: "100%",
-                height: "100%",
-                autoCenter: true,
-                acceleration: false,
-                elevation: 100,
-                duration: 800,
-                display: 'single',
-                gradients: true
-            });
             const cartCount = {{ isset($cartCount) ? $cartCount : 0 }};
             if (typeof cartCountdisplay === 'function') {
                 cartCountdisplay(cartCount);
             }
-            window.addEventListener("orientationchange", () => window.location.reload());
         });
 
         function buyNow(details) {
