@@ -90,53 +90,47 @@
             </section>
         @endif
 
-        @php
-            $allBooks = [];
-            foreach ($categories as $category) {
-                foreach ($category->books as $book) {
-                    $allBooks[] = $book;
-                }
-            }
-        @endphp
-
-        @if (count($allBooks) > 0)
-            <section class="space-y-4">
-                <div class="flex items-end justify-between gap-4">
-                    <div>
-                        <span class="ui-badge ui-badge-brand">{{ count($allBooks) }} books</span>
-                        <h2 class="section-title mt-3">All Books</h2>
+        @forelse ($categories as $category)
+            @if (count($category->books) > 0)
+                <section class="space-y-4">
+                    <div class="flex items-end justify-between gap-4">
+                        <div>
+                            <span class="ui-badge ui-badge-brand">{{ $category->books->count() }} books</span>
+                            <h2 class="section-title mt-3 capitalize">{{ $category->name }}</h2>
+                        </div>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    @forelse ($allBooks as $book)
-                        <article class="book-card h-full">
-                            <div class="skeleton-loader absolute inset-0 z-10 animate-pulse rounded-[1.5rem] bg-blue-50"></div>
-                            <div class="book-cover">
-                                <a href="{{ route('detail.view', $book->id) }}">
-                                    <img loading="lazy" src="{{ asset($book->images) }}" alt="Book cover" class="book-image opacity-0 transition-opacity duration-500">
-                                </a>
-                            </div>
-                            <div class="book-body">
-                                <div>
-                                    <h3 class="line-clamp-2 text-lg font-semibold text-slate-900">{{ $book->name }}</h3>
-                                    <p class="mt-2 line-clamp-2 text-sm text-slate-600">{{ $book->description }}</p>
+                    <div class="flex gap-6 overflow-x-auto pb-4">
+                        @forelse ($category->books as $book)
+                            <article class="book-card h-full flex-shrink-0 w-64">
+                                <div class="skeleton-loader absolute inset-0 z-10 animate-pulse rounded-[1.5rem] bg-blue-50"></div>
+                                <div class="book-cover">
+                                    <a href="{{ route('detail.view', $book->id) }}">
+                                        <img loading="lazy" src="{{ asset($book->images) }}" alt="Book cover" class="book-image opacity-0 transition-opacity duration-500">
+                                    </a>
                                 </div>
-                                <div class="flex items-center justify-between gap-3">
-                                    <span class="price-chip">Rs.{{ number_format($book->price) }}</span>
-                                    <button type="button" onclick="addToCart(this, {{ $book }}, 1)" class="ui-button-primary px-4 py-2 text-xs">
-                                        <span class="button-text">{{ __('home.addToCart') }}</span>
-                                        <span class="loading hidden">{{ __('home.loading') }}</span>
-                                    </button>
+                                <div class="book-body">
+                                    <div>
+                                        <h3 class="line-clamp-2 text-lg font-semibold text-slate-900">{{ $book->name }}</h3>
+                                        <p class="mt-2 line-clamp-2 text-sm text-slate-600">{{ $book->description }}</p>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-3">
+                                        <span class="price-chip">Rs.{{ number_format($book->price) }}</span>
+                                        <button type="button" onclick="addToCart(this, {{ $book }}, 1)" class="ui-button-primary px-4 py-2 text-xs">
+                                            <span class="button-text">{{ __('home.addToCart') }}</span>
+                                            <span class="loading hidden">{{ __('home.loading') }}</span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </article>
-                    @empty
-                        <p class="text-slate-500">No books available.</p>
-                    @endforelse
-                </div>
-            </section>
-        @endif
+                            </article>
+                        @empty
+                            <p class="text-slate-500">No books in this category.</p>
+                        @endforelse
+                    </div>
+                </section>
+            @endif
+        @empty
+        @endforelse
     </div>
 
     <script>
