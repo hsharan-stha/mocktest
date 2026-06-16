@@ -90,6 +90,7 @@
             </section>
         @endif
 
+        <div class="flex flex-row gap-8 w-full">
         @forelse ($categories as $category)
             @if (count($category->books) > 0)
                 <section class="space-y-4">
@@ -131,6 +132,7 @@
             @endif
         @empty
         @endforelse
+        </div>
     </div>
 
     <script>
