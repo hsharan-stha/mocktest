@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,558 +7,360 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('css/swiper/swiper.bundle.min.css') }}">
-
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="{{ asset('js/swiper/swiper.bundle.min.js') }}"></script>
     <script>
         function cartCountdisplay(cartCount) {
-            // Convert to number to ensure proper comparison
             cartCount = parseInt(cartCount) || 0;
-            
-            // Get all cart count elements
-            const cartCountDom = document.getElementById("cart-count");
-            const cartCountSidebarDom = document.getElementById("cart-count-sidebar");
-            const guestCartCountDom = document.getElementById("guest-cart-count");
-            const guestCartCountSidebarDom = document.getElementById("guest-cart-count-sidebar");
-            
-            // Update authenticated user cart count (top bar)
-            if (cartCountDom) {
+            ['cart-count', 'cart-count-sidebar', 'guest-cart-count', 'guest-cart-count-sidebar'].forEach((id) => {
+                const node = document.getElementById(id);
+                if (!node) return;
                 if (cartCount > 0) {
-                    cartCountDom.innerText = cartCount;
-                    cartCountDom.classList.remove("hidden");
+                    node.innerText = cartCount;
+                    node.classList.remove('hidden');
                 } else {
-                    cartCountDom.classList.add("hidden");
+                    node.classList.add('hidden');
                 }
-            }
-            
-            // Update authenticated user cart count (sidebar)
-            if (cartCountSidebarDom) {
-                if (cartCount > 0) {
-                    cartCountSidebarDom.innerText = cartCount;
-                    cartCountSidebarDom.classList.remove("hidden");
-                } else {
-                    cartCountSidebarDom.classList.add("hidden");
-                }
-            }
-            
-            // Update guest cart count (top bar - if exists)
-            if (guestCartCountDom) {
-                if (cartCount > 0) {
-                    guestCartCountDom.innerText = cartCount;
-                    guestCartCountDom.classList.remove("hidden");
-                } else {
-                    guestCartCountDom.classList.add("hidden");
-                }
-            }
-            
-            // Update guest cart count (sidebar)
-            if (guestCartCountSidebarDom) {
-                if (cartCount > 0) {
-                    guestCartCountSidebarDom.innerText = cartCount;
-                    guestCartCountSidebarDom.classList.remove("hidden");
-                } else {
-                    guestCartCountSidebarDom.classList.add("hidden");
-                }
+            });
+        }
+
+        function loggedInDevicesCount(count) {
+            const loggedInDevices = document.getElementById('loggedInDevices');
+            if (loggedInDevices) {
+                loggedInDevices.innerText = ``;
             }
         }
-        
+    </script>
+</head>
+<body class="app-shell overflow-hidden">
+    <div class="flex h-screen overflow-hidden">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 flex h-screen w-72 -translate-x-full flex-col overflow-hidden border-r border-slate-200 bg-white/95 shadow-2xl backdrop-blur transition-transform duration-300 lg:static lg:translate-x-0">
+            <div class="flex items-center justify-between border-b border-slate-200 px-6 py-6">
+                <a href="/" class="flex items-center gap-3">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{{ app()->getLocale() === 'jp' ? '模擬試験プラットフォーム' : 'Mock Test Platform' }}</p>
+                        <p class="text-lg font-semibold text-slate-900">{{ __('home.online_exam') }}</p>
+                    </div>
+                </a>
+                <button onclick="toggleSidebar()" class="rounded-xl p-2 text-slate-500 hover:bg-slate-100 lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="flex-1 space-y-2 overflow-y-auto px-4 py-6">
+                <a href="/" class="flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                    <span>{{ app()->getLocale() === 'jp' ? 'ホーム' : 'Home' }}</span>
+                </a>
+                @if (Auth::check())
+                    <a href="/library" class="flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                        <span>{{ app()->getLocale() === 'jp' ? 'ライブラリ' : 'Library' }}</span>
+                    </a>
+                    <a href="/cart-web" class="flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                        <span>{{ __('home.cart') }}</span>
+                        <span class="hidden rounded-full bg-red-500 px-2 py-0.5 text-xs text-white" id="cart-count-sidebar"></span>
+                    </a>
+                @else
+                    <a href="/cart-web" class="flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                        <span>{{ __('home.cart') }}</span>
+                        <span class="hidden rounded-full bg-red-500 px-2 py-0.5 text-xs text-white" id="guest-cart-count-sidebar"></span>
+                    </a>
+                @endif
+
+                <div class="surface-muted mt-4 p-3">
+                    <button id="langToggleBtn" class="flex w-full items-center justify-between rounded-2xl px-3 py-2 text-left text-sm font-semibold text-slate-700 hover:bg-white">
+                        <span>{{ strtoupper(app()->getLocale()) }}</span>
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="langDropdown" class="mt-2 hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-lg">
+                        <a href="{{ route('lang.switch', 'en') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">English</a>
+                        <a href="{{ route('lang.switch', 'jp') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">Japanese</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="border-t border-slate-200 p-4">
+                @if (Auth::check())
+                    <div class="surface-muted p-4">
+                        <p class="text-sm font-semibold text-slate-900">{{ auth()->user()->name }}</p>
+                        <p class="mt-1 text-xs text-slate-500">{{ Str::limit(auth()->user()->email, 24) }}</p>
+                        <p id="loggedInDevices" class="mt-3 text-xs text-slate-500"></p>
+                        <form method="POST" action="{{ route('logout') }}" class="mt-4">
+                            @csrf
+                            <button type="submit" class="ui-button-secondary w-full">{{ __('home.logout') }}</button>
+                        </form>
+                    </div>
+                @else
+                    <div class="space-y-3">
+                        <a href="{{ route('login') }}" class="ui-button-primary w-full">{{ __('home.signin') }}</a>
+                        <a href="{{ route('register') }}" class="ui-button-secondary w-full">{{ __('home.register') }}</a>
+                    </div>
+                @endif
+            </div>
+        </aside>
+
+        <div id="mobileMenuOverlay" class="fixed inset-0 z-30 hidden bg-slate-950/40 backdrop-blur-sm lg:hidden" onclick="toggleSidebar()"></div>
+
+        <div class="flex h-screen flex-1 flex-col overflow-hidden">
+            <div class="border-b border-slate-200 bg-white/90 backdrop-blur lg:hidden">
+                <div class="app-container flex items-center justify-between py-4">
+                    <button onclick="toggleSidebar()" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <a href="/" class="text-base font-semibold text-slate-900">{{ __('home.online_exam') }}</a>
+                    <a href="/cart-web" class="relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272" />
+                        </svg>
+                        <span class="hidden absolute right-1 top-1 rounded-full bg-red-500 px-1.5 text-[10px] font-semibold text-white" id="{{ Auth::check() ? 'cart-count' : 'guest-cart-count' }}"></span>
+                    </a>
+                </div>
+            </div>
+
+            <main class="app-container flex-1 overflow-y-auto py-6 lg:py-8">
+                {{ $slot }}
+            </main>
+        </div>
+    </div>
+
+    <div id="infoToast" class="fixed bottom-5 right-5 z-[111111] hidden">
+        <div class="surface flex items-start gap-3 px-4 py-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
+                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 2a7 7 0 107 7H9V2z" />
+                    <path d="M13 13H7v2h6v-2z" />
+                </svg>
+            </div>
+            <p id="toastMessage" class="text-sm font-medium text-slate-700">This is your message</p>
+        </div>
+    </div>
+
+    <div id="authModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 px-4 backdrop-blur-sm">
+        <div class="surface max-w-md p-6">
+            <h3 class="text-xl font-semibold text-slate-900">{{ app()->getLocale() === 'jp' ? 'サインインが必要です' : 'Sign in required' }}</h3>
+            <p class="mt-2 text-sm text-slate-600">{{ app()->getLocale() === 'jp' ? '購入やライブラリ利用にはアカウントが必要です。' : 'You need an account to purchase items and access your library.' }}</p>
+            <div class="mt-6 flex gap-3">
+                <a href="{{ route('register') }}" class="ui-button-secondary flex-1">{{ __('home.register') }}</a>
+                <a href="{{ route('login') }}" class="ui-button-primary flex-1">{{ __('home.signin') }}</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 px-4 backdrop-blur-sm">
+        <div class="surface max-w-sm p-6 text-center">
+            <h2 class="text-lg font-semibold text-slate-900">{{ app()->getLocale() === 'jp' ? '購入確認' : 'Confirm Purchase' }}</h2>
+            <p class="mt-2 text-sm text-slate-600">{{ app()->getLocale() === 'jp' ? '購入手続きに進みますか？' : 'Are you sure you want to proceed to buy?' }}</p>
+            <div class="mt-6 flex justify-center gap-3">
+                <button onclick="confirmProceed()" class="ui-button-primary">{{ app()->getLocale() === 'jp' ? 'はい' : 'Yes' }}</button>
+                <button onclick="closeBuyModal()" class="ui-button-secondary">{{ __('cart.cancel') }}</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobileMenuOverlay');
-            
             if (sidebar && overlay) {
                 sidebar.classList.toggle('-translate-x-full');
                 overlay.classList.toggle('hidden');
             }
         }
 
-        function loggedInDevicesCount(count) {
-            let loggedInDevices = document.getElementById("loggedInDevices")
-
-            if (loggedInDevices) {
-                loggedInDevices.innerText = `{{ __('home.slotInfo') }}`.replace('{0}', count).replace('{2}', 2 - count)
-            }
-        }
-    </script>
-
-</head>
-
-<body class="bg-slate-50">
-    <div class="flex h-screen overflow-hidden">
-        
-        <!-- Mobile Menu Overlay -->
-        <div id="mobileMenuOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" onclick="toggleSidebar()"></div>
-
-        <!-- Sidebar Navigation -->
-        <aside id="sidebar" 
-            class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-white to-slate-50 border-r border-slate-200 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-xl">
-            
-            <!-- Sidebar Header -->
-            <div class="flex items-center justify-between p-6 border-b border-slate-200">
-                <a href="/" class="flex items-center gap-3 group">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7 text-primary-600 group-hover:text-primary-700 transition-colors">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-</svg>
-                    <span class="text-xl font-bold tracking-wide text-primary-600 group-hover:text-primary-700 transition-colors">{{ __('home.online_exam') }}</span>
-                </a>
-                <button onclick="toggleSidebar()" class="lg:hidden text-slate-600 hover:text-slate-900 p-2 rounded-lg hover:bg-slate-100 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-
-            <!-- Navigation Menu -->
-            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-                <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-primary-50 hover:text-primary-700 transition-all group">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 group-hover:text-primary-600">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                        </svg>
-                    <span class="font-medium">Home</span>
-                </a>
-
-                @if (Auth::check())
-                    <a href="/library" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-primary-50 hover:text-primary-700 transition-all group">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 group-hover:text-primary-600">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
-                        </svg>
-                        <span class="font-medium">Library</span>
-                    </a>
-
-                    <a href="/cart-web" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-primary-50 hover:text-primary-700 transition-all group relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 group-hover:text-primary-600">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                        </svg>
-                        <span class="font-medium">Cart</span>
-                        <span class="absolute right-4 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex justify-center items-center hidden" id="cart-count-sidebar"></span>
-                    </a>
-                @else
-                    <a href="/cart-web" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-primary-50 hover:text-primary-700 transition-all group relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 group-hover:text-primary-600">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                        </svg>
-                        <span class="font-medium">Cart</span>
-                        <span class="absolute right-4 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex justify-center items-center hidden" id="guest-cart-count-sidebar"></span>
-                    </a>
-                @endif
-
-                <!-- Language Selector -->
-                <div class="pt-4 border-t border-slate-200">
-                    <div class="relative">
-                        <button id="langToggleBtn" class="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-primary-50 hover:text-primary-700 transition-all group">
-                            <div class="flex items-center gap-3">
-                                <span class="text-lg">🌐</span>
-                                <span class="font-medium">{{ strtoupper(app()->getLocale()) }}</span>
-                            </div>
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div id="langDropdown" class="absolute left-0 right-0 mt-2 bg-white border border-slate-200 rounded-lg shadow-lg hidden z-[111111] overflow-hidden">
-                            <a href="{{ route('lang.switch', 'en') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-primary-50 hover:text-primary-700 transition-colors">English - 英語</a>
-                            <a href="{{ route('lang.switch', 'jp') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-primary-50 hover:text-primary-700 transition-colors">Japanese - 日本語</a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            <!-- Sidebar Footer - User Section -->
-            <div class="p-4 border-t border-slate-200">
-                @if (Auth::check())
-                    <div x-data="{ open: false }" class="relative">
-                        <button @click="open = !open" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-primary-50 transition-all group">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}" class="w-10 h-10 rounded-full border-2 border-primary-200" alt="User avatar">
-                            <div class="flex-1 text-left">
-                                <p class="font-semibold text-slate-900 text-sm">{{ auth()->user()->name }}</p>
-                                <p class="text-xs text-slate-500">{{ Str::limit(auth()->user()->email, 20) }}</p>
-                            </div>
-                            <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div x-show="open" @click.away="open = false" class="absolute bottom-full left-0 right-0 mb-2 bg-white border border-slate-200 rounded-lg shadow-xl z-50 overflow-hidden" style="display: none;">
-                            <div class="p-4 border-b border-slate-100">
-                                <p class="font-semibold text-slate-900">{{ auth()->user()->name }}</p>
-                                <p class="text-sm text-slate-500">{{ auth()->user()->email }}</p>
-                            </div>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 transition-colors font-medium">
-                                    {{ __('home.logout') }}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                @else
-                    <div class="space-y-2">
-                        <a href="{{ route('login') }}" class="block w-full px-4 py-2 text-center bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all shadow-md hover:shadow-lg">
-                            {{ __('home.signin') }}
-                        </a>
-                        <a href="{{ route('register') }}" class="block w-full px-4 py-2 text-center bg-gradient-to-r from-accent-500 to-accent-600 text-white font-bold rounded-lg hover:from-accent-600 hover:to-accent-700 transition-all shadow-md hover:shadow-lg">
-                                        {{ __('home.register') }}
-                                    </a>
-                                </div>
-                @endif
-                            </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Mobile Top Bar -->
-            <div class="lg:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 shadow-sm">
-                <button onclick="toggleSidebar()" class="text-slate-600 hover:text-slate-900 p-2 rounded-lg hover:bg-slate-100 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-                <a href="/" class="text-lg font-bold text-primary-600">{{ __('home.online_exam') }}</a>
-                <div class="w-10"></div>
-                        </div>
-
-            <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto">
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-                    {{ $slot }}
-                </div>
-            </main>
-        </div>
-
-    </div>
-
-
-
-
-
-    <!-- Toast Container -->
-    <div id="infoToast" class="fixed bottom-5 right-5 z-[111111] hidden">
-        <div
-            class="bg-white border-l-4 border-primary-600 text-slate-800 px-4 py-3 shadow-xl rounded-lg flex items-start space-x-3 max-w-xs backdrop-blur-sm">
-            <svg class="w-6 h-6 text-primary-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9 2a7 7 0 107 7H9V2z" />
-                <path d="M13 13H7v2h6v-2z" />
-            </svg>
-            <div>
-                <p id="toastMessage" class="text-sm font-medium">This is your message</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Backdrop -->
-    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-        <!-- Modal Box -->
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4 border border-slate-200">
-            <div class="flex items-start justify-between">
-                <div>
-                    <h3 class="text-xl font-bold text-slate-900">Sign in required</h3>
-                    <p class="text-slate-600 text-sm mt-1">You need an account to purchase items.</p>
-                </div>
-                <button onclick="closeAuthModal()" class="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="flex gap-4 pt-2">
-                <a href="{{ route('register') }}"
-                    class="flex-1 inline-block text-center px-4 py-2 bg-gradient-to-r from-accent-500 to-accent-600 text-white font-bold rounded-lg hover:from-accent-600 hover:to-accent-700 transition-all shadow-md hover:shadow-lg">
-                    Register
-                </a>
-                <a href="{{ route('login') }}"
-                    class="flex-1 inline-block text-center px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all shadow-md hover:shadow-lg">
-                    Sign In
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-        <div class="bg-white p-6 rounded-2xl shadow-2xl text-center max-w-sm w-full border border-slate-200">
-            <h2 class="text-lg font-bold mb-4 text-slate-900">Confirm Purchase</h2>
-            <p class="text-slate-600">Are you sure you want to proceed to buy?</p>
-            <div class="mt-6 flex justify-center gap-4">
-                <button onclick="confirmProceed()" class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-2 rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all shadow-md hover:shadow-lg font-medium">
-                    Yes
-                </button>
-                <button onclick="closeBuyModal()" class="bg-slate-100 text-slate-700 px-6 py-2 rounded-lg hover:bg-slate-200 transition-colors font-medium">
-                    Cancel
-                </button>
-            </div>
-        </div>
-    </div>
-
-</body>
-<script>
-    const langBtn = document.getElementById('langToggleBtn');
-    const langDropdown = document.getElementById('langDropdown');
-
-    if (langBtn && langDropdown) {
-    langBtn.addEventListener('click', () => {
-        langDropdown.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', function(e) {
-        if (!langBtn.contains(e.target) && !langDropdown.contains(e.target)) {
-            langDropdown.classList.add('hidden');
-        }
-    });
-    }
-</script>
-<script>
-    function showToast(message, duration = 3000) {
-        const toast = document.getElementById('infoToast');
-        const toastMessage = document.getElementById('toastMessage');
-
-        toastMessage.textContent = message;
-        toast.classList.remove('hidden');
-
-        setTimeout(() => {
-            toast.classList.add('hidden');
-        }, duration);
-    }
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll("form").forEach(function(form) {
-            form.addEventListener("submit", function(e) {
-                const submitBtn = form.querySelector("button[type='submit']");
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML =
-                        ' <span class="ml-2">{{ __('loading') }}</span>';
+        const langBtn = document.getElementById('langToggleBtn');
+        const langDropdown = document.getElementById('langDropdown');
+        if (langBtn && langDropdown) {
+            langBtn.addEventListener('click', () => langDropdown.classList.toggle('hidden'));
+            document.addEventListener('click', function(e) {
+                if (!langBtn.contains(e.target) && !langDropdown.contains(e.target)) {
+                    langDropdown.classList.add('hidden');
                 }
             });
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('infoToast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), duration);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("form").forEach(function(form) {
+                form.addEventListener("submit", function() {
+                    const submitBtn = form.querySelector("button[type='submit']");
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                    }
+                });
+            });
         });
-    });
-</script>
 
-<script>
-    function addToCart(button, book, quantity = 1) {
-        const isLoggedIn = @json(Auth::check());
-        const isEmailVerified = isLoggedIn ? @json(Auth::check() && Auth::user()->hasVerifiedEmail()) : false;
-        console.log(button)
-        if (isLoggedIn) {
-            if (isEmailVerified) {
+        function addToCart(button, book, quantity = 1) {
+            const isLoggedIn = @json(Auth::check());
+            const isEmailVerified = isLoggedIn ? @json(Auth::check() && Auth::user()->hasVerifiedEmail()) : false;
+            if (isLoggedIn) {
+                if (isEmailVerified) {
+                    const textSpan = button.querySelector('.button-text');
+                    const loadingSpan = button.querySelector('.loading');
+                    button.setAttribute("disabled", true);
+                    if (textSpan) textSpan.classList.add('hidden');
+                    if (loadingSpan) loadingSpan.classList.remove('hidden');
 
-                const textSpan = button.querySelector('.button-text');
-                const loadingSpan = button.querySelector('.loading');
-                button.setAttribute("disabled", true)
-                textSpan.classList.add('hidden');
-                loadingSpan.classList.remove('hidden');
-
-
-                fetch('/cart', {
+                    fetch('/cart', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                'content')
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         },
-                        body: JSON.stringify({
-                            book_id: book?.id,
-                            quantity: quantity
-                        })
+                        body: JSON.stringify({ book_id: book?.id, quantity: quantity })
                     })
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success) {
-                            // Update cart count display only
-                            if (typeof cartCountdisplay === 'function' && data.cartCount !== undefined) {
-                                cartCountdisplay(data.cartCount);
-                            }
-                            // Show success message
-                            if (typeof showToast === 'function') {
-                                showToast(data.message || 'Item added to cart successfully');
-                            }
-                        } else {
-                            if (typeof showToast === 'function') {
-                                showToast(data.message || 'Failed to add item to cart');
-                            }
+                        if (data.success && typeof cartCountdisplay === 'function' && data.cartCount !== undefined) {
+                            cartCountdisplay(data.cartCount);
                         }
-
+                        showToast(data.message || (data.success ? 'Item added to cart successfully' : 'Failed to add item to cart'));
                         if (textSpan) textSpan.classList.remove('hidden');
                         if (loadingSpan) loadingSpan.classList.add('hidden');
-                        if (button) button.removeAttribute("disabled");
-
+                        button.removeAttribute("disabled");
                     })
-                    .catch(error => {
-                        console.error('Error:', error);
+                    .catch(() => {
                         if (textSpan) textSpan.classList.remove('hidden');
                         if (loadingSpan) loadingSpan.classList.add('hidden');
-                        if (button) button.removeAttribute("disabled");
+                        button.removeAttribute("disabled");
+                    });
+                } else {
+                    showToast("Please verify your email before adding items to the cart.");
+                }
+            } else {
+                showToast('Please login to add to cart', 4000);
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1500);
+            }
+        }
+
+        function updateQuantity(bookId, quantity = 0) {
+            if (quantity == 0) return;
+            fetch('/cart/update-quantity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ book_id: bookId, quantity: quantity })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success !== false && data.cartCount !== undefined && typeof cartCountdisplay === 'function') {
+                    cartCountdisplay(data.cartCount);
+                }
+            });
+        }
+
+        function deleteCart(bookId) {
+            fetch('/cart/delete-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ book_id: bookId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success !== false && data.cartCount !== undefined && typeof cartCountdisplay === 'function') {
+                    cartCountdisplay(data.cartCount);
+                }
+            });
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('authModal').classList.add('flex');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+            document.getElementById('authModal').classList.remove('flex');
+        }
+
+        function proceedToBuy() {
+            const isLoggedIn = @json(Auth::check());
+            if (isLoggedIn) {
+                window.location.href = "/cart-web";
+            } else {
+                window.location.href = "/login";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const isLoggedIn = @json(Auth::check());
+            if (isLoggedIn) {
+                fetch('/cart')
+                    .then(response => response.json())
+                    .then(data => {
+                        const cartCount = data.cartList?.length || 0;
+                        if (typeof cartCountdisplay === 'function') {
+                            cartCountdisplay(cartCount);
+                        }
                     });
             } else {
-                showToast("Please verify your email before adding items to the cart.");
-            }
-        } else {
-            // Guest user - show login message
-            if (typeof showToast === 'function') {
-                showToast('Please login to add to cart', 4000);
-            } else {
-                alert('Please login to add to cart');
-            }
-            // Redirect to login page after showing message
-            setTimeout(() => {
-                window.location.href = '/login-register';
-            }, 1500);
-        }
-
-    }
-
-    function updateQuantity(bookId, quantity = 0) {
-        if (quantity == 0) return;
-        fetch('/cart/update-quantity', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    book_id: bookId,
-                    quantity: quantity
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success !== false) {
-                    // Update cart count if provided
-                    if (data.cartCount !== undefined && typeof cartCountdisplay === 'function') {
-                        cartCountdisplay(data.cartCount);
-                    }
-                    // Show success message
-                    if (typeof showToast === 'function') {
-                        showToast('Cart updated successfully');
-                    }
+                const cart = JSON.parse(localStorage.getItem('cart_items')) || [];
+                if (typeof cartCountdisplay === 'function') {
+                    cartCountdisplay(cart.length);
                 }
-            })
-            .catch(error => {
-                console.error('Error updating quantity:', error);
-            });
-    }
-
-    function deleteCart(bookId) {
-        fetch('/cart/delete-cart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    book_id: bookId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success !== false) {
-                    // Update cart count if provided
-                    if (data.cartCount !== undefined && typeof cartCountdisplay === 'function') {
-                        cartCountdisplay(data.cartCount);
-                    }
-                    // Show success message
-                    if (typeof showToast === 'function') {
-                        showToast('Cart updated successfully');
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error deleting cart item:', error);
-            });
-    }
-</script>
-<script>
-    function openAuthModal() {
-        document.getElementById('authModal').classList.remove('hidden');
-    }
-
-    function closeAuthModal() {
-        document.getElementById('authModal').classList.add('hidden');
-    }
-</script>
-<script>
-    function proceedToBuy() {
-        const isLoggedIn = @json(Auth::check());
-        const isEmailVerified = isLoggedIn ? @json(Auth::check() && Auth::user()->hasVerifiedEmail()) : false;
-
-        if (isLoggedIn) {
-            window.location.href = "/cart-web";
-        } else {
-            window.location.href = "/login-register";
-        }
-    }
-    
-    // Initialize cart count on page load
-    document.addEventListener("DOMContentLoaded", function() {
-        const isLoggedIn = @json(Auth::check());
-        
-        // Initialize cart count display based on login status
-        if (isLoggedIn) {
-            // Fetch cart count from API
-            fetch('/cart')
-                .then(response => response.json())
-                .then(data => {
-                    const cartCount = data.cartList?.length || 0;
-                    if (typeof cartCountdisplay === 'function') {
-                        cartCountdisplay(cartCount);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching cart count:', error);
-                });
-        } else {
-            // Get cart count from localStorage
-            const cart = JSON.parse(localStorage.getItem('cart_items')) || [];
-            if (typeof cartCountdisplay === 'function') {
-                cartCountdisplay(cart.length);
             }
+        });
+
+        function confirmToBuy() {
+            document.getElementById('confirmModal').classList.remove('hidden');
+            document.getElementById('confirmModal').classList.add('flex');
         }
-    });
 
-    function confirmToBuy() {
-        document.getElementById('confirmModal').classList.remove('hidden');
-    }
+        function closeBuyModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            document.getElementById('confirmModal').classList.remove('flex');
+        }
 
-    function closeBuyModal() {
-        document.getElementById('confirmModal').classList.add('hidden');
-    }
-
-
-    function confirmProceed() {
-        closeBuyModal();
-        document.getElementById("proceedToBuy").setAttribute("disabled", true);
-        document.getElementById("proceedToBuy").innerText = "{{ __('home.loading') }}"
-        fetch('/purchases', {
+        function confirmProceed() {
+            closeBuyModal();
+            document.getElementById("proceedToBuy").setAttribute("disabled", true);
+            document.getElementById("proceedToBuy").innerText = "{{ __('home.loading') }}";
+            fetch('/purchases', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-
-
                 },
-                body: JSON.stringify({
-                    books: payloadOfCart
-                })
+                body: JSON.stringify({ books: payloadOfCart })
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Success:', data);
                 window.location.href = `/purchases?purchase_id=${data?.purchase_id}`;
             })
-            .catch(error => {
-                console.error('Error:', error);
+            .catch(() => {
                 document.getElementById("proceedToBuy").removeAttribute("disabled");
-                document.getElementById("proceedToBuy").innerText = "Proceed to Buy"
+                document.getElementById("proceedToBuy").innerText = "Proceed to Buy";
             });
-    }
-</script>
-
-
+        }
+    </script>
+</body>
 </html>

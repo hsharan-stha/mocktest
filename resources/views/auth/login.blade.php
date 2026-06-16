@@ -1,52 +1,49 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="mb-8">
+        <span class="ui-badge ui-badge-brand">Welcome Back</span>
+        <h2 class="mt-4 text-3xl font-semibold tracking-tight text-slate-900">{{ __('Log in') }}</h2>
+        <p class="mt-2 text-sm leading-6 text-slate-600">
+            {{ app()->getLocale() === 'jp'
+                ? 'サインインして、ライブラリ、購入履歴、模擬試験の進捗にアクセスしてください。'
+                : 'Sign in to access your library, purchases, and mock exam progress.' }}
+        </p>
+    </div>
 
-    <form method="POST" action="{{ route('login') }}">
+    <x-auth-session-status class="mb-4 ui-alert-success" :status="session('status')" />
+
+    <form method="POST" action="{{ route('login') }}" class="space-y-5">
         @csrf
 
-        <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" class="text-blue-700" />
-            <x-text-input id="email" class="block mt-1 w-full border-blue-300 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                          type="email" 
-                          name="email" 
-                          :value="old('email')" 
-                          required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2 text-blue-600" />
+            <x-input-label for="email" :value="__('Email')" class="ui-label" />
+            <x-text-input id="email" class="ui-input mt-1 block w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('email')" class="ui-error" />
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" class="text-blue-700" />
-            <x-text-input id="password" 
-                          class="block mt-1 w-full border-blue-300 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                          type="password"
-                          name="password"
-                          required autocomplete="current-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2 text-blue-600" />
+        <div>
+            <x-input-label for="password" :value="__('Password')" class="ui-label" />
+            <x-text-input id="password" class="ui-input mt-1 block w-full" type="password" name="password" required autocomplete="current-password" />
+            <x-input-error :messages="$errors->get('password')" class="ui-error" />
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" 
-                       class="rounded border-blue-300 text-blue-600 shadow-sm focus:ring-blue-500" 
-                       name="remember">
-                <span class="ml-2 text-sm text-blue-700">{{ __('Remember me') }}</span>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <label for="remember_me" class="inline-flex items-center text-sm text-slate-600">
+                <input id="remember_me" type="checkbox" class="rounded border-slate-300 text-blue-600 shadow-sm focus:ring-blue-500" name="remember">
+                <span class="ml-2">{{ __('Remember me') }}</span>
             </label>
-        </div>
 
-        <!-- Actions -->
-        <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 rounded-md" 
-                   href="{{ route('password.request') }}">
+                <a class="text-sm font-medium text-blue-700 underline-offset-4 hover:text-blue-800 hover:underline" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
+        </div>
 
-            <x-primary-button class="ml-3 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500">
+        <div class="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
+            <a href="{{ route('register') }}" class="text-sm font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline">
+                {{ app()->getLocale() === 'jp' ? 'アカウントをお持ちでないですか？' : 'Need an account?' }}
+            </a>
+            <x-primary-button class="ui-button-primary justify-center sm:min-w-[140px]">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>

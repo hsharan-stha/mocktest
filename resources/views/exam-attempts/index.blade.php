@@ -1,107 +1,88 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Exam Attempts') }}
-        </h2>
+        Exam Attempts
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if (session('success'))
-                <div class="mb-4 text-green-600 font-medium">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <div class="page-stack">
+        @if (session('success'))
+            <div class="ui-alert-success">{{ session('success') }}</div>
+        @endif
 
-            <!-- Search and Filter Form -->
-            <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg p-6 mb-4">
-                <form method="GET" action="{{ route('exam-attempts.index') }}" class="flex flex-wrap gap-4">
-                    <div class="flex-1 min-w-[200px]">
-                        <input type="text" name="search" value="{{ request('search') }}" 
-                               placeholder="Search by name or email..." 
-                               class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                    </div>
-                    <div>
-                        <select name="book_id" class="px-4 py-2 border border-gray-300 rounded-md">
-                            <option value="">All Books</option>
-                            @foreach(\App\Models\Book::all() as $book)
-                                <option value="{{ $book->id }}" {{ request('book_id') == $book->id ? 'selected' : '' }}>
-                                    {{ $book->title }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                            Filter
-                        </button>
-                        <a href="{{ route('exam-attempts.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded ml-2">
-                            Clear
-                        </a>
+        <section class="data-card">
+            <div class="data-card-header">
+                <div>
+                    <h2 class="section-title">Attempt Overview</h2>
+                    <p class="section-copy mt-2">Filter by learner or book, review results quickly, and drill into the full attempt detail page.</p>
+                </div>
+            </div>
+
+            <div class="border-b border-slate-200 px-5 py-4">
+                <form method="GET" action="{{ route('exam-attempts.index') }}" class="grid gap-3 md:grid-cols-[1.4fr_1fr_auto]">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name or email..." class="ui-input">
+                    <select name="book_id" class="ui-select">
+                        <option value="">All Books</option>
+                        @foreach(\App\Models\Book::all() as $book)
+                            <option value="{{ $book->id }}" {{ request('book_id') == $book->id ? 'selected' : '' }}>
+                                {{ $book->name ?? $book->title }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <div class="flex gap-3">
+                        <button type="submit" class="ui-button-primary">Filter</button>
+                        <a href="{{ route('exam-attempts.index') }}" class="ui-button-secondary">Clear</a>
                     </div>
                 </form>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
-                <div class="overflow-x-auto">
-                    <table class="w-full table-auto text-gray-900 dark:text-gray-100">
-                        <thead>
-                            <tr class="bg-gray-100 dark:bg-gray-800">
-                                <th class="px-4 py-3 text-left">ID</th>
-                                <th class="px-4 py-3 text-left">Examinee Name</th>
-                                <th class="px-4 py-3 text-left">Email</th>
-                                <th class="px-4 py-3 text-left">Book</th>
-                                <th class="px-4 py-3 text-center">Score</th>
-                                <th class="px-4 py-3 text-center">Correct/Total</th>
-                                <th class="px-4 py-3 text-left">Started At</th>
-                                <th class="px-4 py-3 text-left">Completed At</th>
-                                <th class="px-4 py-3 text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($examAttempts as $attempt)
-                            <tr class="border-t hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <td class="px-4 py-3">#{{ $attempt->id }}</td>
-                                <td class="px-4 py-3">{{ $attempt->examinee_name }}</td>
-                                <td class="px-4 py-3">{{ $attempt->examinee_email }}</td>
-                                <td class="px-4 py-3">{{ $attempt->book->title ?? 'N/A' }}</td>
-                                <td class="px-4 py-3 text-center">
-                                    <span class="font-bold {{ $attempt->score_percentage >= 70 ? 'text-green-600' : ($attempt->score_percentage >= 50 ? 'text-yellow-600' : 'text-red-600') }}">
+            <div class="data-grid">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Examinee</th>
+                            <th>Book</th>
+                            <th>Score</th>
+                            <th>Correct / Total</th>
+                            <th>Started</th>
+                            <th>Completed</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($examAttempts as $attempt)
+                            <tr>
+                                <td>#{{ $attempt->id }}</td>
+                                <td>
+                                    <div class="font-semibold text-slate-900">{{ $attempt->examinee_name }}</div>
+                                    <div class="mt-1 text-xs text-slate-500">{{ $attempt->examinee_email }}</div>
+                                </td>
+                                <td>{{ $attempt->book->name ?? $attempt->book->title ?? 'N/A' }}</td>
+                                <td>
+                                    <span class="ui-badge {{ ($attempt->score_percentage ?? 0) >= 70 ? 'ui-badge-success' : (($attempt->score_percentage ?? 0) >= 50 ? 'ui-badge-accent' : 'ui-badge-danger') }}">
                                         {{ number_format($attempt->score_percentage, 2) }}%
                                     </span>
                                 </td>
-                                <td class="px-4 py-3 text-center">
-                                    {{ $attempt->correct_answers }}/{{ $attempt->total_questions }}
-                                </td>
-                                <td class="px-4 py-3">{{ $attempt->started_at ? $attempt->started_at->format('Y-m-d H:i') : 'N/A' }}</td>
-                                <td class="px-4 py-3">{{ $attempt->completed_at ? $attempt->completed_at->format('Y-m-d H:i') : 'In Progress' }}</td>
-                                <td class="px-4 py-3 text-center">
-                                    <a href="{{ route('exam-attempts.show', $attempt) }}" 
-                                       class="text-indigo-600 hover:text-indigo-800" 
-                                       title="View Details">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                    </a>
+                                <td>{{ $attempt->correct_answers }}/{{ $attempt->total_questions }}</td>
+                                <td>{{ $attempt->started_at ? $attempt->started_at->format('Y-m-d H:i') : 'N/A' }}</td>
+                                <td>{{ $attempt->completed_at ? $attempt->completed_at->format('Y-m-d H:i') : 'In Progress' }}</td>
+                                <td>
+                                    <a href="{{ route('exam-attempts.show', $attempt) }}" class="ui-button-secondary px-4 py-2 text-xs">View Details</a>
                                 </td>
                             </tr>
-                            @empty
+                        @empty
                             <tr>
-                                <td colspan="9" class="px-4 py-8 text-center text-gray-500">
-                                    No exam attempts found.
+                                <td colspan="8">
+                                    <div class="py-10 text-center text-slate-500">No exam attempts found.</div>
                                 </td>
                             </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Pagination -->
-                <div class="px-4 py-3 border-t">
-                    {{ $examAttempts->links() }}
-                </div>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-        </div>
+
+            <div class="border-t border-slate-200 px-5 py-4">
+                {{ $examAttempts->links() }}
+            </div>
+        </section>
     </div>
 </x-app-layout>

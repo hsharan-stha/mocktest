@@ -1,47 +1,35 @@
 <x-entry-layout>
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <div>
-                <h1 class="text-4xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent mb-2">
-                    📚 {{__("library.bookLibrary")}}
-                </h1>
-                <p class="text-slate-600">Manage and organize your purchased books</p>
-            </div>
-        </div>
-
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-8">
-            <div class="bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-6 border border-primary-200 shadow-sm">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-primary-700 mb-1">Total Books</p>
-                        <p class="text-3xl font-bold text-primary-900" id="totalBooksCount">0</p>
+    <div class="page-stack">
+        <section class="page-hero">
+            <div class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <span class="eyebrow">{{ app()->getLocale() === 'jp' ? 'マイライブラリ' : 'My Library' }}</span>
+                    <h1 class="page-title">{{ __('library.bookLibrary') }}</h1>
+                    <p class="page-copy">{{ app()->getLocale() === 'jp' ? '購入した教材を整理し、すっきりしたダッシュボードからすぐ読書を再開できます。' : 'Keep your purchased titles organized and jump back into reading from a cleaner, more focused dashboard.' }}</p>
+                </div>
+                <div class="grid gap-3 sm:grid-cols-2">
+                    <div class="rounded-3xl bg-white/10 p-5 backdrop-blur">
+                        <p class="text-sm text-blue-100">{{ app()->getLocale() === 'jp' ? '総書籍数' : 'Total Books' }}</p>
+                        <p class="mt-2 text-3xl font-semibold" id="totalBooksCount">0</p>
                     </div>
-                    <div class="w-12 h-12 bg-primary-200 rounded-lg flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
+                    <div class="rounded-3xl bg-white/10 p-5 backdrop-blur">
+                        <p class="text-sm text-blue-100">{{ app()->getLocale() === 'jp' ? '読書準備完了' : 'Reading Ready' }}</p>
+                        <p class="mt-2 text-base font-medium">{{ app()->getLocale() === 'jp' ? '前回の続きからすぐに読書を開始できます。' : 'Continue where you left off and launch the reader in one tap.' }}</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Books Section -->
-    <div id="booksSection">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                <span class="text-3xl">📖</span>
-                All Books
-            </h2>
-        </div>
-        <div id="booksContainer"
-            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            <!-- Books will be rendered here -->
-        </div>
+        <section class="surface p-5 sm:p-6">
+            <div class="mb-6 flex items-center justify-between gap-4">
+                <div>
+                    <h2 class="section-title">{{ app()->getLocale() === 'jp' ? '購入済み書籍' : 'Purchased Books' }}</h2>
+                    <p class="section-copy mt-2">{{ app()->getLocale() === 'jp' ? '利用可能な書籍が残り利用回数と読書アクション付きで表示されます。' : 'Your available library titles appear here with remaining access counts and direct reading actions.' }}</p>
+                </div>
+            </div>
+            <div id="booksContainer" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+        </section>
     </div>
-
 
     <script>
         const books = @json($purchasesList);
@@ -49,57 +37,45 @@
         function renderBooks() {
             const container = document.getElementById('booksContainer');
             container.innerHTML = '';
-            
-            // Update total books count
             document.getElementById('totalBooksCount').textContent = books.length;
-            
+
             if (books.length === 0) {
                 container.innerHTML = `
-                    <div class="col-span-full flex flex-col items-center justify-center py-16 px-4">
-                        <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
+                    <div class="col-span-full">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A3.375 3.375 0 0011.25 11.625v2.625" />
+                                </svg>
+                            </div>
+                            <h3 class="mt-5 text-xl font-semibold text-slate-900">Your library is empty</h3>
+                            <p class="mt-2 text-sm text-slate-600">Purchase books from the catalog and they will appear here with direct reading access.</p>
                         </div>
-                        <p class="text-slate-500 text-lg font-medium mb-2">No books available</p>
-                        <p class="text-slate-400 text-sm">Purchase books to add them to your library</p>
                     </div>
                 `;
                 return;
             }
-            
+
             books.forEach(book => {
                 const div = document.createElement('div');
-                div.className = "group relative bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 cursor-pointer";
-                div.setAttribute('data-id', book.id);
-
+                div.className = "book-card library-book-card";
                 div.innerHTML = `
-                    <a href="/reader/${book.id}/reading" class="book-anchor block">
-                        <div class="aspect-[2/3] overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 relative">
-                            <img loading="lazy" 
-                                src="${book.src}" 
-                                alt="${book.name}" 
-                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
-                                onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 200 300\\'%3E%3Crect fill=\\'%23e2e8f0\\' width=\\'200\\' height=\\'300\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' text-anchor=\\'middle\\' dy=\\'.3em\\' fill=\\'%2394a3b8\\' font-family=\\'Arial\\' font-size=\\'16\\'%3EBook%3C/text%3E%3C/svg%3E';" />
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-                                <div class="text-white text-xs font-semibold">
-                                    <div>Total: ${book.total_quantity || 0}</div>
-                                    <div>Remaining: ${book.remaining_quantity || 0}</div>
+                    <a href="/reader/${book.id}/reading" class="book-anchor block h-full">
+                        <div class="book-cover relative">
+                            <img loading="lazy" src="${book.src}" alt="${book.name}" class="h-full w-full object-cover" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22%3E%3Crect fill=%22%23e2e8f0%22 width=%22200%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%2394a3b8%22 font-family=%22Arial%22 font-size=%2216%22%3EBook%3C/text%3E%3C/svg%3E';" />
+                            <div class="absolute inset-x-3 bottom-3 rounded-2xl bg-slate-950/70 px-3 py-2 text-xs font-medium text-white backdrop-blur">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span>Total: ${book.total_quantity || 0}</span>
+                                    <span>Remaining: ${book.remaining_quantity || 0}</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="p-3">
-                            <h3 class="font-semibold text-slate-900 text-sm line-clamp-2 group-hover:text-primary-600 transition-colors">
-                                ${book.name}
-                            </h3>
-                        </div>
-                        <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div class="bg-white/90 backdrop-blur-sm rounded-lg p-1.5 shadow-lg">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
+                        <div class="book-body">
+                            <div>
+                                <h3 class="line-clamp-2 text-lg font-semibold text-slate-900">${book.name}</h3>
+                                <p class="mt-2 text-sm text-slate-500">Continue reading from your purchased collection.</p>
                             </div>
+                            <span class="ui-button-primary w-full text-center">Continue Reading</span>
                         </div>
                     </a>
                 `;
@@ -111,25 +87,17 @@
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const isLoggedIn = @json(Auth::check());
             const cartCount = {{ isset($cartCount) ? $cartCount : 0 }};
-            
-            // Update cart count display
             if (typeof cartCountdisplay === 'function') {
                 cartCountdisplay(cartCount);
             }
-            
-            // Update logged in devices count
             if (typeof loggedInDevicesCount === 'function') {
                 loggedInDevicesCount({{ isset($loggedInDevices) ? $loggedInDevices : 0 }});
             }
-            
-            // Cart count is updated via cartCountdisplay function, no need to render sidebar
         });
     </script>
     <script>
-        window.addEventListener("pageshow", function(event) {
-            // This will run on both normal and bfcache restores
+        window.addEventListener("pageshow", function() {
             document.querySelectorAll(".book-anchor").forEach(function(anchor) {
                 anchor.disabled = false;
                 anchor.innerHTML = anchor.dataset.originalText;
@@ -137,19 +105,13 @@
         });
 
         document.addEventListener("DOMContentLoaded", function() {
-            DOMContentLoaded()
-        });
-
-        function DOMContentLoaded() {
             document.querySelectorAll(".book-anchor").forEach(function(anchor) {
-                // Save original button text
                 anchor.dataset.originalText = anchor.innerHTML;
-
-                anchor.addEventListener("click", function(e) {
+                anchor.addEventListener("click", function() {
                     anchor.disabled = true;
-                    anchor.innerHTML = '<span class="ml-2">Loading...</span>';
+                    anchor.innerHTML = '<div class="book-body"><span class="ui-button-secondary w-full">Loading...</span></div>';
                 });
             });
-        }
+        });
     </script>
 </x-entry-layout>

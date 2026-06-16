@@ -1,109 +1,81 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Books') }}
-        </h2>
+        Books
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if (session('success'))
-                <div class="mb-4 text-green-600 font-medium">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <div class="page-stack">
+        @if (session('success'))
+            <div class="ui-alert-success">{{ session('success') }}</div>
+        @endif
 
-            <div class="flex justify-end mb-4">
-                <a href="{{ route('books.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                    + Add Book
-                </a>
+        <section class="data-card">
+            <div class="data-card-header">
+                <div>
+                    <h2 class="section-title">Book Catalog</h2>
+                    <p class="section-copy mt-2">Filter your catalog, open page management, and keep the content library tidy.</p>
+                </div>
+                <a href="{{ route('books.create') }}" class="ui-button-primary">Add Book</a>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg p-6">
-                <table class="w-full table-auto text-gray-900 dark:text-gray-100">
+            <div class="border-b border-slate-200 px-5 py-4">
+                <form method="GET" class="grid gap-3 md:grid-cols-5">
+                    <input type="text" name="name" value="{{ request('name') }}" class="ui-input" placeholder="Search by book name">
+                    <input type="text" name="category" value="{{ request('category') }}" class="ui-input" placeholder="Search category">
+                    <input type="text" name="company" value="{{ request('company') }}" class="ui-input" placeholder="Search company">
+                    <input type="text" name="price" value="{{ request('price') }}" class="ui-input" placeholder="Search price">
+                    <div class="flex gap-3">
+                        <button type="submit" class="ui-button-primary w-full">Filter</button>
+                        <a href="{{ route('books.index') }}" class="ui-button-secondary w-full">Reset</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="data-grid">
+                <table class="data-table">
                     <thead>
-                        <tr class="bg-gray-100 dark:bg-gray-800">
-                            <th class="px-4 py-2 text-left">
-                                <form method="GET">
-                                    <input type="text" name="name" value="{{ request('name') }}"
-                                        class="w-full rounded border-gray-300 text-sm px-2 py-1 dark:bg-gray-700 dark:text-white dark:border-gray-500"
-                                        placeholder="Search name">
-                            </th>
-                            <th class="px-4 py-2 text-center">
-                                <input type="text" name="category" value="{{ request('category') }}"
-                                    class="w-full rounded border-gray-300 text-sm px-2 py-1 text-center dark:bg-gray-700 dark:text-white dark:border-gray-500"
-                                    placeholder="Search category">
-                            </th>
-                            <th class="px-4 py-2 text-center">
-                                <input type="text" name="company" value="{{ request('company') }}"
-                                    class="w-full rounded border-gray-300 text-sm px-2 py-1 text-center dark:bg-gray-700 dark:text-white dark:border-gray-500"
-                                    placeholder="Search company">
-                            </th>
-                            <th class="px-4 py-2 text-left">
-                                <input type="text" name="price" value="{{ request('price') }}"
-                                    class="w-full rounded border-gray-300 text-sm px-2 py-1 dark:bg-gray-700 dark:text-white dark:border-gray-500" 
-                                    placeholder="Search price">
-                            </th>
-                            <th class="px-4 py-2 text-center">
-                                <button type="submit"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded">
-                                    Filter
-                                </button>
-                                <a href="{{ route('books.index') }}"
-                                    class="ml-2 text-gray-500 hover:text-black text-sm">Reset</a>
-                                </form>
-                            </th>
-                        </tr>
-                    </thead>
-                    <thead>
-                        <tr class="bg-gray-100 dark:bg-gray-800">
-                            <th class="px-4 py-2 text-left">Name</th>
-                            <th class="px-4 py-2 text-center">Category</th>
-                            <th class="px-4 py-2 text-center">Company</th>
-                            <th class="px-4 py-2 text-left">Price</th>
-                            <th class="px-4 py-2 text-center">Actions</th>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Company</th>
+                            <th>Price</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($books as $book)
-                        <tr class="border-t">
-                            <td class="px-4 py-2">{{ $book->name }}</td>
-                            <td class="px-4 py-2 text-center">{{ $book->category->name }}</td>
-                            <td class="px-4 py-2 text-center">{{ $book->company->name }}</td>
-                            <td class="px-4 py-2">Rs.{{ $book->price }}</td>
-                            <td class="px-4 py-2 text-right">
-                                <div class="flex justify-end  items-center space-x-2">
-                                    <!-- Edit -->
-                                    <a href="{{ route('books.edit', $book) }}" class="text-indigo-600 hover:text-indigo-800" title="Edit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M15.232 5.232l3.536 3.536M9 13l6.768-6.768a2 2 0 012.828 0l.172.172a2 2 0 010 2.828L12 17H9v-3z"/>
-                                        </svg>
-                                    </a>
-                                    <!-- Delete -->
-                                    <form action="{{ route('books.destroy', $book) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete it?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-800" title="Delete">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M6 18L18 6M6 6l12 12"/>
-                                            </svg>
-                                        </button>
-                                    </form>
-
-                                    <a href="{{ route('books.pages.index', $book) }}" class="bg-green-800 hover:bg-blue-600 text-white px-4 py-1 rounded">
-                                        Pages
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
+                        @forelse($books as $book)
+                            <tr>
+                                <td>
+                                    <div class="font-semibold text-slate-900">{{ $book->name }}</div>
+                                    <div class="mt-1 text-xs text-slate-500">{{ \Illuminate\Support\Str::limit($book->description, 70) }}</div>
+                                </td>
+                                <td>{{ $book->category->name ?? '-' }}</td>
+                                <td>{{ $book->company->name ?? '-' }}</td>
+                                <td><span class="price-chip">Rs.{{ $book->price }}</span></td>
+                                <td>
+                                    <div class="flex flex-wrap gap-2">
+                                        <a href="{{ route('books.edit', $book) }}" class="ui-button-secondary px-4 py-2 text-xs">Edit</a>
+                                        <a href="{{ route('books.pages.index', $book) }}" class="ui-button-primary px-4 py-2 text-xs">Pages</a>
+                                        <form action="{{ route('books.destroy', $book) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete it?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="ui-button-danger px-4 py-2 text-xs">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5">
+                                    <div class="py-10 text-center">
+                                        <p class="text-lg font-semibold text-slate-900">No books found</p>
+                                        <p class="mt-2 text-sm text-slate-500">Create a new book or adjust your filters.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     </div>
 </x-app-layout>

@@ -12,13 +12,13 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: [
-                    '"Shippori Mincho"',
-                    '"Yu Mincho"',
+                    'Shippori Mincho',
+                    'Yu Mincho',
                     'YuMincho',
-                    '"Hiragino Mincho ProN"',
-                    '"MS PMincho"',
-                    '"MS Mincho"',
-                    ...defaultTheme.fontFamily.sans,
+                    'Hiragino Mincho ProN',
+                    'MS PMincho',
+                    'MS Mincho',
+                    'serif',
                 ],
             },
             colors: {

@@ -22,14 +22,14 @@ return new class extends Migration {
             $table->longText('page_html')->nullable();
 
                     // New columns for quiz question and options
-        $table->text('question')->nullable();
-        $table->string('option1')->nullable();
-        $table->string('option2')->nullable();
-        $table->string('option3')->nullable();
-        $table->string('option4')->nullable();
+        // $table->text('question')->nullable();
+        // $table->string('option1')->nullable();
+        // $table->string('option2')->nullable();
+        // $table->string('option3')->nullable();
+        // $table->string('option4')->nullable();
 
         // The correct answer could be stored as string or integer (e.g., option number or option text)
-        $table->string('correct_answer')->nullable();
+        // $table->string('correct_answer')->nullable();
         
             $table->timestamps();
 
