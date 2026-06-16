@@ -14,13 +14,7 @@
             </div>
         </section>
 
-        <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-            <section class="surface p-5 sm:p-6">
-                <!-- Preview header removed as requested -->
-
-                <!-- Flipbook removed per request -->
-            </section>
-
+        <div class="grid gap-6">
             <section class="space-y-6">
                 <div class="surface p-6">
                     <div class="flex flex-col gap-6 sm:flex-row">

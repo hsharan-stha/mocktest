@@ -258,43 +258,13 @@
                 </div>
             @endforeach
 
-            <div class="container">
-                <div class="overlay" style="inset: 0;bottom: unset; z-index: 1111; background-color: red;">
-                    <h3 class="overlay-title">Unlock Full Access</h3>
-                    <p class="overlay-text">You're viewing a preview. Purchase the full version to read the entire book.
-                        Once purchased, the full version will be available in your library for unlimited access.
-                    </p>
-
-
-                </div>
-            </div>
+            
 
 
         </div>
 
 
-        <div class="overlay">
-            <h3 class="overlay-title">🔒 Unlock Full Access</h3>
-
-            <p class="overlay-text">
-                You're viewing a preview. Purchase the full version to read the entire book.<br>
-                Once purchased, you can read it anytime from your <strong>Library</strong>.
-            </p>
-
-            <button class="overlay-button" onclick="addToCart(this, {{ $bookDetails }}, 1)">
-                <span class="button-text">📚 Add to Cart Now – ¥{{ $bookDetails->price }}</span>
-                <span class="loading hidden">Loading...</span>
-            </button>
-
-            <div style="display: felx;justify-content: space-between;">
-                <a href="/" class="overlay-link">
-                    ⬅️ Go to Home Page
-                </a>
-                <a href="/cart" class="overlay-link">
-                    📚 Go to Cart Page
-                </a>
-            </div>
-        </div>
+        
 
     </div>
 
