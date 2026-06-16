@@ -15,15 +15,28 @@ class QuestionTypeController extends Controller
      */
     public function index(Request $request)
     {
+        $selectedCategoryId = $request->query('category_id');
+
+        if ($request->has('category_id')) {
+            if ($selectedCategoryId === '') {
+                session()->forget('question_types_category_id');
+            } else {
+                session(['question_types_category_id' => $selectedCategoryId]);
+            }
+        } elseif (session()->has('question_types_category_id')) {
+            $selectedCategoryId = session('question_types_category_id');
+        }
+
         $questionTypes = QuestionType::with('category')
-            ->when($request->filled('category_id'), function ($query) use ($request) {
-                $query->where('category_id', $request->category_id);
+            ->when($selectedCategoryId, function ($query) use ($selectedCategoryId) {
+                $query->where('category_id', $selectedCategoryId);
             })
             ->orderBy('order')
             ->get();
+
         $categories = Category::orderBy('name')->get();
 
-        return view('question-types.index', compact('questionTypes', 'categories'));
+        return view('question-types.index', compact('questionTypes', 'categories', 'selectedCategoryId'));
     }
 
     /**
@@ -57,7 +70,12 @@ class QuestionTypeController extends Controller
 
         QuestionType::create($request->all());
 
-        return redirect()->route('question-types.index')
+        $redirectParams = [];
+        if (session()->has('question_types_category_id')) {
+            $redirectParams['category_id'] = session('question_types_category_id');
+        }
+
+        return redirect()->route('question-types.index', $redirectParams)
             ->with('success', 'Question type created successfully.');
     }
 
@@ -105,7 +123,12 @@ class QuestionTypeController extends Controller
 
         $questionType->update($request->all());
 
-        return redirect()->route('question-types.index')
+        $redirectParams = [];
+        if (session()->has('question_types_category_id')) {
+            $redirectParams['category_id'] = session('question_types_category_id');
+        }
+
+        return redirect()->route('question-types.index', $redirectParams)
             ->with('success', 'Question type updated successfully.');
     }
 
@@ -119,7 +142,12 @@ class QuestionTypeController extends Controller
     {
         $questionType->delete();
 
-        return redirect()->route('question-types.index')
+        $redirectParams = [];
+        if (session()->has('question_types_category_id')) {
+            $redirectParams['category_id'] = session('question_types_category_id');
+        }
+
+        return redirect()->route('question-types.index', $redirectParams)
             ->with('success', 'Question type deleted successfully.');
     }
 }
